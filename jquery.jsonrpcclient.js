@@ -16,7 +16,40 @@
  *
  * More examples are available in README.md
  */
-(function($) {
+
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+
+        // make jQuery happy
+        if (typeof window == 'undefined')
+          global.window = require('jsdom').jsdom().createWindow();
+
+        define(['jquery'], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS
+
+        // make jQuery happy
+        if (typeof window == 'undefined')
+          global.window = require('jsdom').jsdom().createWindow();
+
+        factory(require('jquery'));
+    } else {
+        // Browser globals
+        factory($);
+    }
+}(function ($) {
+
+  /**
+   * Helpers
+   */
+  // Fallback to JSON.stringify if $.toJSON is not available
+  if (typeof $.toJSON === 'undefined') {
+    $.toJSON = function(object) {
+      return JSON.stringify(object);
+    };
+  }
+
   /**
    * @fn new
    * @memberof $.JsonRpcClient
@@ -530,7 +563,6 @@
     };
   };
 
-  
+  return $.JsonRpcClient;
 
-
-})(jQuery);
+}));
