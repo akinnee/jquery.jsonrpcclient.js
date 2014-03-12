@@ -50,6 +50,18 @@
     };
   }
 
+  // use a nodejs shim for xmlhttprequest if it does not exist
+  // not sure about the window check, but when karma loads this XMLHttpRequest is still undefiend
+  if (typeof XMLHttpRequest == 'undefined' && typeof window == 'undefined') {
+    var XMLHttpRequest = require("w3c-xmlhttprequest").XMLHttpRequest;
+
+    $.support.cors = true;
+    $.ajaxSettings.xhr = function() {
+      return new XMLHttpRequest;
+    };
+  }
+
+
   /**
    * @fn new
    * @memberof $.JsonRpcClient
